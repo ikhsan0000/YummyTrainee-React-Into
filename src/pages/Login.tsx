@@ -1,11 +1,40 @@
-import React, {SyntheticEvent, useState} from 'react';
+import React, {SyntheticEvent, useEffect, useState} from 'react';
 import { Redirect } from 'react-router-dom';
 
 const Login = () => {
     
+    const [redirect, setRedirect] = useState(false)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginSuccess, setLoginSuccess] = useState(false);
+
+    function getCookie(cname:string) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+    useEffect(() => {
+        if (getCookie('login'))
+        {
+            setRedirect(true)
+        }
+    }, [])
+
+    if (redirect) {
+        return <Redirect to='/' />
+    }
+    
 
     const handleSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -21,7 +50,8 @@ const Login = () => {
             if(data.email == email && data.password == password)
             {
                 setLoginSuccess(true)
-                document.cookie = "login=true;max-age=3600;"; 
+                document.cookie = "login=true;max-age=36000;"; 
+                document.cookie = `username=${data.firstName};max-age=36000;`; 
             }
             else
             {
