@@ -10,6 +10,10 @@ body {
   font-size: .875rem;
 }
 
+::file-selector-button {
+  display: none;
+}
+
 .feather {
   width: 16px;
   height: 16px;

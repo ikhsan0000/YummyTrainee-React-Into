@@ -1,20 +1,20 @@
 import React, { Component, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Wrapper from "../components/Wrapper";
-import { User } from "../models/User";
+import { Product } from "../models/Product";
 
-const Users = () => {
+const Products = () => {
 
-  const [users, setUsers]:any = useState(null)
+  const [products, setProducts]:any = useState(null)
   const [page, setPage] = useState(1);
 
   const handleDelete = (id:number) => {
     if(window.confirm('Are you sure you want to delete this'))
     {
-      fetch(`http://localhost:8000/users/${id}`, {
+      fetch(`http://localhost:8000/products/${id}`, {
               method: 'DELETE',
           })
-      setUsers(users.filter((user: User) => user.id !== id))
+      setProducts(products.filter((product: Product) => product.id !== id))
     }
   }
   
@@ -32,59 +32,59 @@ const Users = () => {
     }
   }
 
+  
   useEffect(() => {
-    fetch(`http://localhost:8000/users?_page=${page}&limit=10`, {
+    fetch(`http://localhost:8000/products?_page=${page}&limit=10`, {
       method: 'GET',
     }).then((response) => {
       return response.json()
-    }).then((data) => {setUsers(data)})
+    }).then((data) => {setProducts(data)})
 
   }, [page])
 
+    return (
+        <Wrapper>
 
-        return(
-          <Wrapper>
-          
-          {!users && <div className="center-flex">
+        {!products && <div className="center-flex">
             <div className="spinner-border" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
           </div>}
 
-          {users && <section>
+          {products && <section>
             
             
-            <Link to={'/users/create'} type="button" className="btn btn-sm btn-secondary mt-3 mb-1">
+            <Link to={'/products/create'} type="button" className="btn btn-sm btn-secondary mt-3 mb-1">
             <i className="bi bi-plus-square-dotted"></i>
-            Add User
+            Add Products
           </Link>
 
             <div className="table-responsive">
               <table className="table table-striped table-sm">
                 <thead>
                   <tr>
-                    <th scope="col">#id</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Email</th>
+                    <th scope="col">Id#</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                    {users && users.map((user: User) =>(
-                        <tr key={user.id}>
-                          <td>{user.id}</td>
-                          <td>{user.firstName}</td>
-                          <td>{user.lastName}</td>
-                          <td>{user.email}</td>
+                    {products && products.map((product: Product) =>(
+                        <tr key={product.id}>
+                          <td>{product.id}</td>
+                          <td><img src={process.env.PUBLIC_URL + '/assets/' + product.image} width="100" alt="" /></td>
+                          <td>{product.name}</td>
+                          <td>{product.description}</td>
                           <td>
                             <div className="btn-group" role="group" aria-label="Basic example">
-                              <Link to={`/users/${user.id}/edit`} className="btn btn-sm btn-outline-success" >
+                              <Link to={`/users/${product.id}/edit`} className="btn btn-sm btn-outline-success" >
                                 <i className="bi bi-pencil-square"></i>
                                 Edit
                               </Link>
                             
-                              <button className="btn btn-sm btn-outline-danger" onClick={() => {handleDelete(user.id)} }>
+                              <button className="btn btn-sm btn-outline-danger" onClick={() => {handleDelete(product.id)} }>
                                 <i className="bi bi-trash-fill"></i>
                                 Delete
                               </button>
@@ -104,11 +104,9 @@ const Users = () => {
           </section>}
           
           
-          </Wrapper>
-          
-        );
-    }
 
-export default Users;
+        </Wrapper>
+    );
+};
 
-
+export default Products;

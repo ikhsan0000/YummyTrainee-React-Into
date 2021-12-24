@@ -7,6 +7,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginSuccess, setLoginSuccess] = useState(false);
+    const [fetched, setFetched] = useState(false);
 
     function getCookie(cname:string) {
         let name = cname + "=";
@@ -42,8 +43,7 @@ const Login = () => {
         await fetch('http://localhost:8000/users', {
             method: 'GET',
         }).then((response) => {
-            let fetched = response.json();
-            return fetched;
+            return response.json()
         }).then((data) => {
             return data.filter((item: { email: string; }) => item.email == email)[0]
         }).then((data) => {
@@ -51,7 +51,7 @@ const Login = () => {
             {
                 setLoginSuccess(true)
                 document.cookie = "login=true;max-age=36000;"; 
-                document.cookie = `username=${data.firstName};max-age=36000;`; 
+                document.cookie = `email=${data.email};max-age=36000;`; 
             }
             else
             {
@@ -68,7 +68,8 @@ const Login = () => {
     return (
 
         <div className="text-center register-page">
-        <main className="form-signin">
+            
+            <main className="form-signin">
             <form onSubmit={handleSubmit}>
                 <h1 className="h3 mb-4 fw-normal">Login</h1>
                 <div className="form-floating">
@@ -88,7 +89,7 @@ const Login = () => {
             </form>
             </main>
 
-    </div>
+        </div>
     );
 };
 
